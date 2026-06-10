@@ -439,6 +439,10 @@ export const agentsIntegrations = {
         backend_tool_rendering: "backend-tool-rendering",
         agentic_generative_ui: "agentic-generative-ui",
         shared_state: "shared-state",
+        // OSS-162 port: Tier-1 auto-inject demos (plain Strands agents; the
+        // runtime sends `injectA2UITool` and the adapter injects generate_a2ui).
+        a2ui_dynamic_schema: "a2ui-dynamic-schema",
+        a2ui_recovery: "a2ui-recovery",
       },
     ),
     human_in_the_loop: new AWSStrandsAgent({

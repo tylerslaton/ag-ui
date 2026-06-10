@@ -113,6 +113,22 @@ class StrandsAgentConfig:
     the frontend produced. Disable only if you manage Strands history
     yourself (e.g. via a custom ``session_manager``).
     """
+    a2ui: Optional[Dict[str, Any]] = None
+    """A2UI auto-injection config (OSS-162) — everything A2UI-related in one
+    place. When the CopilotKit runtime forwards ``injectA2UITool`` (or
+    ``a2ui["inject_a2ui_tool"]`` opts in on a host that doesn't), the adapter
+    injects a ``generate_a2ui`` recovery tool and infers the model from the
+    wrapped agent — no manual ``get_a2ui_tools()`` needed. Keys:
+
+    - ``inject_a2ui_tool`` — opt in without the runtime flag; a string also
+      names the injected render tool to drop.
+    - ``default_catalog_id`` — catalog id stamped into auto-injected surfaces
+      (must match the host renderer's catalog).
+    - ``guidelines`` — ``{"composition_guide": ...}`` teaches the sub-agent the
+      catalog's components; required for a real model to compose them.
+    - ``catalog`` — inline catalog for catalog-aware (semantic) recovery.
+    - ``recovery`` — attempt cap / retry-UI threshold.
+    """
     """Optional factory for creating per-thread SessionManager instances.
 
     Called exactly once per thread_id the first time that thread is seen.

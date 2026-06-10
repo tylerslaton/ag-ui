@@ -9,10 +9,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def create_model():
+def create_model(openai_api: str = "responses"):
     """Create a Strands model based on MODEL_PROVIDER env var.
 
     Supported providers: openai (default), anthropic, gemini
+
+    ``openai_api`` selects the OpenAI API mode. The default Responses API
+    surfaces reasoning summaries but buffers tool-call argument deltas until
+    the call completes; pass ``"chat"`` for demos that need tool-call ARGUMENTS
+    to stream incrementally (e.g. A2UI progressive surface painting).
     """
     provider = os.getenv("MODEL_PROVIDER", "openai").lower()
 
@@ -22,6 +27,14 @@ def create_model():
             raise ValueError(
                 "OPENAI_API_KEY environment variable is required when MODEL_PROVIDER=openai. "
                 "Set it in your .env file or environment."
+            )
+        if openai_api == "chat":
+            from strands.models.openai import OpenAIModel
+            return OpenAIModel(
+                client_args={
+                    "api_key": api_key,
+                },
+                model_id=os.getenv("MODEL_ID", "gpt-5.4"),
             )
         from strands.models.openai_responses import OpenAIResponsesModel
         return OpenAIResponsesModel(
